@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ongoing
+  revoked
+  finished
+}
+
+model Offer {
+  id                   BigInt    @id
+  token                Token     @relation(fields: [tokenId], references: [id])
+  tokenId              BigInt    @default(autoincrement())
+  price                Float
+  seller               String
+  buyer                String?
+  status               Status
+  tokenPropertyVersion BigInt
+  tokenCreator         String
+  tokenCollection      String
+  tokenName            String
+  createAt             DateTime
+  updateAt             DateTime?
+
+  @@map("offers")
+}
+
+model Token {
+  id              BigInt  @id @default(autoincrement())
+  propertyVersion BigInt
+  creator         String
+  collection      String
+  name            String
+  uri             String
+  description     String
+  // royaltyPayee       String
+  // royaltyNumerator   BigInt
+  // royaltyDenominator BigInt
+  // https://github.com/prisma/prisma/issues/14231
+  maximum         String?
+  supply          String
+  Offer           Offer[]
+
+  @@unique([propertyVersion, creator, collection, name])
+  @@map("tokens")
+}
+
+model Execution {
+  id                       BigInt @id @default(autoincrement())
+  listEventsExecutedSeqNum BigInt
+  buyEventsExecutedSeqNum  BigInt
+
+  @@map("executions")
+}

@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "workspaces": [
+    "market-frontend",
+    "market-contracts",
+    "market-backend"
+  ],
+  "dependencies": {
+    "ts-node": "^10.9.1"
+  }
+}
